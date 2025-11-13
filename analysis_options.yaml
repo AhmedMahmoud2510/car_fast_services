@@ -1,0 +1,32 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # تجاهل التحذير الخاص باستخدام BuildContext بعد await
+    use_build_context_synchronously: ignore
+  exclude:
+    # تجاهل مجلدات البناء والملفات التلقائية
+    - build/**
+    - lib/generated/**
+    - lib/l10n/**
+    - lib/**.g.dart
+
+linter:
+  rules:
+    # قواعد أساسية لتحسين جودة الكود
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_print: true
+    prefer_final_fields: true
+    unnecessary_this: true
+    avoid_unused_constructor_parameters: true
+    prefer_typing_uninitialized_variables: false
+    always_declare_return_types: true
+    sort_child_properties_last: true
+    unnecessary_null_checks: true
+    use_key_in_widget_constructors: true
+    unnecessary_const: true
+    prefer_single_quotes: true
+    curly_braces_in_flow_control_structures: true
+    avoid_redundant_argument_values: true
+    require_trailing_commas: true
