@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       } else if (userRole == 'client') {
         // context.pushReplacementNamed(Routes.homeClientScreen);
-        context.pushNamed(
+        context.pushReplacementNamed(
           Routes.clientCarsScreen,
           arguments: '${await CacheHelper.getData(key: CacheKeys.userId)}',
         );

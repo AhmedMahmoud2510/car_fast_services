@@ -1,5 +1,5 @@
 import 'package:quick_cars_service/barrel.dart';
-
+import 'package:quick_cars_service/features/technician/data/model/car_requests_maintenance_model.dart';
 
 class AppRouter {
   Route? generateRoute(RouteSettings settings) {
@@ -136,8 +136,8 @@ class AppRouter {
       case Routes.invoiceScreen:
         final String invoiceId = settings.arguments as String;
         return PageTransition(
-          child: BlocProvider(
-            create: (context) => HomeTechnicianCubit(getIt()),
+          child: BlocProvider.value(
+            value: getIt<HomeTechnicianCubit>(),
             child: InvoiceWebViewScreen(invoiceId: invoiceId),
           ),
           type: PageTransitionType.fade,
@@ -162,10 +162,9 @@ class AppRouter {
         return PageTransition(
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(
-                create: (context) =>
-                    HomeTechnicianCubit(getIt())
-                      ..getCarRequestsMaintenance(carId: carId),
+              BlocProvider.value(
+                value: getIt<HomeTechnicianCubit>()
+                  ..getCarRequestsMaintenance(carId: carId),
               ),
               BlocProvider(create: (context) => HomeAdminCubit(getIt())),
             ],
@@ -176,13 +175,12 @@ class AppRouter {
           settings: settings,
         );
       case Routes.requestDetailsScreen:
-        final int index = settings.arguments as int;
+        final request = settings.arguments as Data;
         return PageTransition(
-          child: BlocProvider(
-            create: (context) =>
-                HomeTechnicianCubit(getIt())..getCarRequestsMaintenance(),
+          child: BlocProvider.value(
+            value: getIt<HomeTechnicianCubit>(),
             // ..getRequestDetails(requestId: '$requestId')
-            child: RequestDetailsScreen(index: index),
+            child: RequestDetailsScreen(request: request),
           ),
           type: PageTransitionType.fade,
           alignment: Alignment.center,

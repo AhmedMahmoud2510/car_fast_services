@@ -6,7 +6,7 @@ class ClientDrawerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: AppColors.primaryColor,
-      width: MediaQuery.of(context).size.width / 2,
+      width: MediaQuery.of(context).size.width / 1.2,
       child: ListView(
         children: [
           // Drawer Items

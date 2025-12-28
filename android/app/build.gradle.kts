@@ -43,7 +43,7 @@ android {
         applicationId = "com.sit.quick_cars_service"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = 9
+        versionCode = 11
         versionName = flutterVersionName
     }
 

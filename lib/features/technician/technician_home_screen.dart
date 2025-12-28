@@ -103,6 +103,18 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
                         Icons.search,
                         color: AppColors.primaryColor,
                       ),
+                      suffixIcon: cubit.searchController.text.isNotEmpty
+                          ? InkWell(
+                              onTap: () {
+                                cubit.clearSearch();
+                              },
+                              child: Icon(
+                                Icons.close,
+                                size: 20.r,
+                                color: AppColors.primaryColor,
+                              ),
+                            )
+                          : null,
                       filled: true,
                       fillColor: AppColors.secondaryColor.withAlpha(26),
                       contentPadding: EdgeInsets.symmetric(
@@ -147,11 +159,11 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
   Widget _buildContent(BuildContext context, HomeTechnicianState state) {
     final cubit = context.read<HomeTechnicianCubit>();
 
-    // // حالة التحميل
-    // if (cubit.carMaintenanceRequestsModel == null &&
-    //     state is GetRequestsLoadingState) {
-    //   return const Center(child: CircularProgressIndicator());
-    // }
+    // إظهار مؤشر تحميل فقط في أول مرة أو عند تصفير البحث
+    if (state is GetRequestsLoadingState &&
+        cubit.carMaintenanceRequestsModel == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     if (cubit.carMaintenanceRequestsModel == null ||
         cubit.carMaintenanceRequestsModel!.data!.isEmpty) {
@@ -175,127 +187,134 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
         padding: EdgeInsets.only(bottom: 100.h),
         itemCount: cubit.carMaintenanceRequestsModel!.data!.length,
         separatorBuilder: (context, index) => 15.verticalSpace,
-        itemBuilder: (context, index) => GestureDetector(
-          onTap: () {
-            context.pushNamed(Routes.requestDetailsScreen, arguments: index);
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(15.r)),
-              border: Border.all(color: AppColors.primaryColor),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${'invoice_number'.tr()}: ",
-                        style: Styles.style20W700.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          '${cubit.carMaintenanceRequestsModel!.data![index].id}',
-                          style: Styles.style18W600.copyWith(
+        itemBuilder: (context, index) {
+          final requests = cubit.carMaintenanceRequestsModel!.data!;
+          final request = requests[index];
+          return GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                Routes.requestDetailsScreen,
+                arguments: request,
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(15.r)),
+                border: Border.all(color: AppColors.primaryColor),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${'invoice_number'.tr()}: ",
+                          style: Styles.style20W700.copyWith(
                             color: AppColors.primaryColor,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  15.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${'invoice_date'.tr()}: ",
-                        style: Styles.style20W600.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      Text(
-                        '${cubit.carMaintenanceRequestsModel!.data![index].createdAt}',
-                        style: Styles.style18W500.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  15.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${'car_number'.tr()}: ",
-                        style: Styles.style20W700.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      Text(
-                        '${cubit.carMaintenanceRequestsModel!.data![index].car!.plateNo}',
-                        style: Styles.style18W500.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  15.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "${'total_amount'.tr()}: ",
-                        style: Styles.style20W700.copyWith(
-                          color: AppColors.primaryColor,
-                        ),
-                      ),
-                      Flexible(
-                        child: Text(
-                          '${cubit.carMaintenanceRequestsModel!.data![index].totalAmount} ريال',
-                          style: Styles.style18W500.copyWith(
-                            color: AppColors.primaryColor,
+                        Flexible(
+                          child: Text(
+                            '${cubit.carMaintenanceRequestsModel!.data![index].id}',
+                            style: Styles.style18W600.copyWith(
+                              color: AppColors.primaryColor,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  4.verticalSpace,
-                  if (CacheHelper.getData(key: CacheKeys.userRole) !=
-                      'technician')
-                    TextButton(
-                      onPressed: () {
-                        context.pushNamed(
-                          Routes.invoiceScreen,
-                          arguments:
-                              '${cubit.carMaintenanceRequestsModel!.data![index].id}',
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: AppColors.primaryColor,
-                        foregroundColor: AppColors.secondaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.w),
-                        child: Text(
-                          'invoice'.tr(),
-                          style: Styles.style18W500.copyWith(
-                            color: AppColors.secondaryColor,
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
-                ],
+                    15.verticalSpace,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${'invoice_date'.tr()}: ",
+                          style: Styles.style20W600.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        Text(
+                          '${cubit.carMaintenanceRequestsModel!.data![index].createdAt}',
+                          style: Styles.style18W500.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    15.verticalSpace,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${'car_number'.tr()}: ",
+                          style: Styles.style20W700.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        Text(
+                          '${cubit.carMaintenanceRequestsModel!.data![index].car!.plateNo}',
+                          style: Styles.style18W500.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    15.verticalSpace,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${'total_amount'.tr()}: ",
+                          style: Styles.style20W700.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                        Flexible(
+                          child: Text(
+                            '${cubit.carMaintenanceRequestsModel!.data![index].totalAmount} ريال',
+                            style: Styles.style18W500.copyWith(
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    4.verticalSpace,
+                    if (CacheHelper.getData(key: CacheKeys.userRole) !=
+                        'technician')
+                      TextButton(
+                        onPressed: () {
+                          context.pushNamed(
+                            Routes.invoiceScreen,
+                            arguments:
+                                '${cubit.carMaintenanceRequestsModel!.data![index].id}',
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                          child: Text(
+                            'invoice'.tr(),
+                            style: Styles.style18W500.copyWith(
+                              color: AppColors.secondaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

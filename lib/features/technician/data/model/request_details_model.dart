@@ -3,7 +3,7 @@ import 'package:quick_cars_service/barrel.dart';
 class RequestDetailsModel {
   int? code;
   String? message;
-  List<Data>? data;
+  List<RequestDetailsDataModel>? data;
   Meta? meta;
   Links? links;
 
@@ -19,9 +19,9 @@ class RequestDetailsModel {
     code = json['code'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <RequestDetailsDataModel>[];
       json['data'].forEach((v) {
-        data!.add(Data.fromJson(v));
+        data!.add(RequestDetailsDataModel.fromJson(v));
       });
     }
     meta = json['meta'] != null ? Meta.fromJson(json['meta']) : null;
@@ -45,7 +45,7 @@ class RequestDetailsModel {
   }
 }
 
-class Data {
+class RequestDetailsDataModel {
   int? id;
   String? serviceName;
   String? serviceDesc;
@@ -53,7 +53,7 @@ class Data {
   String? desc;
   String? createdAt;
 
-  Data({
+  RequestDetailsDataModel({
     this.id,
     this.serviceName,
     this.serviceDesc,
@@ -62,7 +62,7 @@ class Data {
     this.createdAt,
   });
 
-  Data.fromJson(Map<String, dynamic> json) {
+  RequestDetailsDataModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     serviceName = json['service_name'];
     serviceDesc = json['service_desc'];

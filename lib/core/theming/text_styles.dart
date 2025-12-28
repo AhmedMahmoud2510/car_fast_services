@@ -2,11 +2,11 @@ import 'package:quick_cars_service/barrel.dart';
 
 abstract class Styles {
   // --- Font Size 9 ---
+  static const double size9 = 9;
   static final TextStyle style9W300 = TextStyle(
-    fontSize: SizeConfig.responsiveValue(phone: 7.sp, tablet: 11.sp),
+    fontSize: SizeConfig.responsiveValue(phone: size9.sp, tablet: 11.sp),
     fontWeight: FontWeight.w300,
   );
-  static const double size9 = 9;
   static final TextStyle style9W400 = TextStyle(
     fontSize: SizeConfig.responsiveValue(phone: size9.sp, tablet: 11.sp),
     fontWeight: FontWeight.w400,
@@ -142,7 +142,7 @@ abstract class Styles {
   );
 
   // --- Font Size 18 ---
-  static const double size18 = 16;
+  static const double size18 = 18;
   static final TextStyle style18W300 = TextStyle(
     fontSize: SizeConfig.responsiveValue(phone: size18.sp, tablet: 20.sp),
     fontWeight: FontWeight.w300,
@@ -177,7 +177,7 @@ abstract class Styles {
   );
 
   // --- Font Size 20 ---
-  static const double size20 = 18;
+  static const double size20 = 20;
   static final TextStyle style20W300 = TextStyle(
     fontSize: SizeConfig.responsiveValue(phone: size20.sp, tablet: 22.sp),
     fontWeight: FontWeight.w300,

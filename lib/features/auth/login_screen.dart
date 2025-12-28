@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                           );
                         } else if (role == 'client') {
                           // context.pushReplacementNamed(Routes.homeClientScreen);
-                          context.pushNamed(
+                          context.pushReplacementNamed(
                             Routes.clientCarsScreen,
                             arguments:
                                 '${await CacheHelper.getData(key: CacheKeys.userId)}',

@@ -1,8 +1,9 @@
 import 'package:quick_cars_service/barrel.dart';
+import 'package:quick_cars_service/features/technician/data/model/car_requests_maintenance_model.dart';
 
 class RequestDetailsScreen extends StatefulWidget {
-  const RequestDetailsScreen({super.key, required this.index});
-  final int index;
+  const RequestDetailsScreen({super.key, required this.request});
+  final Data request;
 
   @override
   State<RequestDetailsScreen> createState() => _RequestDetailsScreenState();
@@ -42,26 +43,6 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
         builder: (context, state) {
           final cubit = context.read<HomeTechnicianCubit>();
 
-          if (cubit.carMaintenanceRequestsModel == null) {
-            return const Center(
-              child: CircularProgressIndicator(color: AppColors.primaryColor),
-            );
-          }
-
-          if (cubit.carMaintenanceRequestsModel!.data == null ||
-              cubit.carMaintenanceRequestsModel!.data!.isEmpty) {
-            return const NoDataWidget();
-          }
-
-          final maintenances = cubit
-              .carMaintenanceRequestsModel!
-              .data![widget.index]
-              .maintenances;
-
-          if (maintenances == null || maintenances.isEmpty) {
-            return const NoDataWidget();
-          }
-
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
             child: SingleChildScrollView(
@@ -71,7 +52,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      final request = maintenances[index];
+                      final request = widget.request.maintenances![index];
 
                       return GestureDetector(
                         onTap: () {
@@ -117,8 +98,9 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     ),
                                   ],
                                 ),
-                                15.verticalSpace,
-                                if (userRole == 'technician')
+                                if (userRole == 'technician') ...[
+                                  15.verticalSpace,
+
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -139,8 +121,10 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       ),
                                     ],
                                   ),
-                                if (userRole == 'admin') 15.verticalSpace,
-                                if (userRole == 'admin')
+                                ],
+                                if (userRole == 'admin') ...[
+                                  15.verticalSpace,
+
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -161,6 +145,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                       ),
                                     ],
                                   ),
+                                ],
                               ],
                             ),
                           ),
@@ -168,7 +153,7 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                       );
                     },
                     separatorBuilder: (_, __) => 15.verticalSpace,
-                    itemCount: maintenances.length,
+                    itemCount: widget.request.maintenances!.length,
                   ),
                   100.verticalSpace,
                 ],

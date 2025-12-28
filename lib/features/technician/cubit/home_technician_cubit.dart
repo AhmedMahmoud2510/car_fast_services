@@ -13,7 +13,7 @@ class HomeTechnicianCubit extends Cubit<HomeTechnicianState> {
   int? maintenanceRequestsPageSize;
   String? userRole;
   int? clientId;
-
+  String? _lastCarId;
   final TextEditingController searchController = TextEditingController();
   Timer? _debounce;
   bool isSearching = false;
@@ -25,12 +25,17 @@ class HomeTechnicianCubit extends Cubit<HomeTechnicianState> {
     });
   }
 
+  void clearSearch() {
+    searchController.clear(); // مسح النص من الحقل
+    searchCarRequests(''); // استدعاء منطق البحث بنص فارغ لإعادة الداتا الأصلية
+  }
+
   Future<void> searchCarRequests(String query) async {
-    if (query.isEmpty) {
-      isSearching = false;
+    if (query.trim().isEmpty) {
+      isSearching = false; // مهم جداً
       setOffsetMaintenanceRequests(1);
       maintenanceRequestsOffsetList.clear();
-      await getCarRequestsMaintenance();
+      await getCarRequestsMaintenance(); // سيستخدم _lastCarId المحفوظ
       return;
     }
 
@@ -65,19 +70,26 @@ class HomeTechnicianCubit extends Cubit<HomeTechnicianState> {
   }
 
   Future<void> getCarRequestsMaintenance({String? carId}) async {
-    if (isSearching && maintenanceRequestsOffset > 1) {
-      return;
+    // إذا تم تمرير carId، احفظه. وإذا لم يتم تمريره، استخدم المحفوظ سابقاً.
+    if (carId != null) {
+      _lastCarId = carId;
     }
+
+    // منع الطلبات المتكررة أثناء البحث أو التحميل
+    if (isSearching && maintenanceRequestsOffset > 1) return;
+
     showLoading();
     userRole = await CacheHelper.getData(key: CacheKeys.userRole);
     clientId = await CacheHelper.getData(key: CacheKeys.userId);
+
     if (!maintenanceRequestsOffsetList.contains(maintenanceRequestsOffset)) {
       maintenanceRequestsOffsetList.add(maintenanceRequestsOffset);
       emit(GetRequestsLoadingState());
-      if (carMaintenanceRequestsModel != null &&
-          maintenanceRequestsOffset == 1) {
+
+      if (maintenanceRequestsOffset == 1) {
         carMaintenanceRequestsModel = null;
       }
+
       final result = userRole == 'technician'
           ? await _homeTechnicianRepo.getCarRequestsMaintenanceTechnician(
               page: '$maintenanceRequestsOffset',
@@ -85,11 +97,12 @@ class HomeTechnicianCubit extends Cubit<HomeTechnicianState> {
           : userRole == 'client'
           ? await _homeTechnicianRepo.getCarRequestsMaintenanceCar(
               page: '$maintenanceRequestsOffset',
-              carId: '$carId',
+              carId: '$_lastCarId', // استخدم القيمة المحفوظة
             )
           : await _homeTechnicianRepo.getCarRequestsMaintenance(
               page: '$maintenanceRequestsOffset',
             );
+
       result.fold(
         (l) {
           hideLoading();
@@ -114,9 +127,6 @@ class HomeTechnicianCubit extends Cubit<HomeTechnicianState> {
         maintenanceRequestsPaginate = false;
         emit(ChangeMaintenanceRequestsPaginateState());
       }
-    }
-    if (searchController.text.isEmpty) {
-      isSearching = false;
     }
   }
 

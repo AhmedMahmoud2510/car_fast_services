@@ -26,7 +26,7 @@ class QuickCarsServiceApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    EasyLocalization.of(context)!.resetLocale();
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarBrightness: Brightness.light),
       child: MaterialApp(
