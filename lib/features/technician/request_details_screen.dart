@@ -29,6 +29,13 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final maintenanceList = widget.request.maintenances ?? [];
+    final int totalServices = maintenanceList.length;
+
+    // حساب إجمالي التكلفة (تحويل السعر من نص إلى رقم وجمعه)
+    final double totalCost = maintenanceList.fold(0, (sum, item) {
+      return sum + (double.tryParse(item.product?.price ?? '0') ?? 0);
+    });
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -48,6 +55,33 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  Container(
+                    padding: EdgeInsets.all(15.r),
+                    margin: EdgeInsets.only(bottom: 20.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(15.r),
+                      border: Border.all(
+                        color: AppColors.primaryColor.withOpacity(0.3),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildSummaryItem(
+                          label: 'إجمالي عدد الخدمات',
+                          value: '$totalServices',
+                          icon: Icons.settings_suggest_outlined,
+                        ),
+                        12.verticalSpace,
+                        _buildSummaryItem(
+                          label: 'إجمالي التكاليف',
+                          value: '${totalCost.toStringAsFixed(2)} ر.س',
+                          icon: Icons.monetization_on_outlined,
+                        ),
+                      ],
+                    ),
+                  ),
+                  16.verticalSpace,
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -98,7 +132,8 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
                                     ),
                                   ],
                                 ),
-                                if (userRole == 'technician') ...[
+                                // if (userRole == 'technician')
+                                ...[
                                   15.verticalSpace,
 
                                   Row(
@@ -162,6 +197,26 @@ class _RequestDetailsScreenState extends State<RequestDetailsScreen> {
           );
         },
       ),
+    );
+  }
+
+  Widget _buildSummaryItem({
+    required String label,
+    required String value,
+    required IconData icon,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 18.r, color: AppColors.primaryColor),
+        5.horizontalSpace,
+        Text(label, style: Styles.style14W400.copyWith(color: Colors.grey)),
+        const Spacer(),
+        Text(
+          value,
+          style: Styles.style18W600.copyWith(color: AppColors.primaryColor),
+        ),
+      ],
     );
   }
 }

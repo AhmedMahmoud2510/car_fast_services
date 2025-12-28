@@ -64,7 +64,13 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
       },
       builder: (context, state) {
         final cubit = context.read<HomeTechnicianCubit>();
-
+        final requests = cubit.carMaintenanceRequestsModel?.data ?? [];
+        final int totalRequests = requests.length;
+        final double totalCost = requests.fold(
+          0,
+          (sum, item) =>
+              sum + (double.tryParse(item.totalAmount.toString()) ?? 0),
+        );
         return Scaffold(
           drawer: CacheHelper.getData(key: CacheKeys.userRole) == 'technician'
               ? const TechnicianDrawerWidget()
@@ -87,65 +93,12 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
             child: Column(
               children: [
                 10.verticalSpace,
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                  child: TextFormField(
-                    controller: cubit.searchController,
-                    style: Styles.style14W400.copyWith(
-                      color: AppColors.primaryColor,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: 'requests_search'.tr(),
-                      hintStyle: Styles.style14W400.copyWith(
-                        color: AppColors.primaryColor.withAlpha(179),
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: AppColors.primaryColor,
-                      ),
-                      suffixIcon: cubit.searchController.text.isNotEmpty
-                          ? InkWell(
-                              onTap: () {
-                                cubit.clearSearch();
-                              },
-                              child: Icon(
-                                Icons.close,
-                                size: 20.r,
-                                color: AppColors.primaryColor,
-                              ),
-                            )
-                          : null,
-                      filled: true,
-                      fillColor: AppColors.secondaryColor.withAlpha(26),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 15.w,
-                        vertical: 15.h,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryColor,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(15.r)),
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryColor,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(15.r)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: AppColors.primaryColor,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(15.r)),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      cubit.onSearchChanged(value);
-                    },
-                  ),
-                ),
+                _buildSearchField(cubit),
 
+                // --- قسم الإحصائيات الجديد ---
+                if (requests.isNotEmpty)
+                  _buildSummaryCard(totalRequests, totalCost),
+                16.verticalSpace,
                 // 8.verticalSpace,
                 Expanded(child: _buildContent(context, state)),
               ],
@@ -153,6 +106,80 @@ class _TechnicianHomeScreenState extends State<TechnicianHomeScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSearchField(HomeTechnicianCubit cubit) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: TextFormField(
+        controller: cubit.searchController,
+        decoration: InputDecoration(
+          hintText: 'requests_search'.tr(),
+          prefixIcon: const Icon(Icons.search, color: AppColors.primaryColor),
+          suffixIcon: cubit.searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.close, color: AppColors.primaryColor),
+                  onPressed: () => cubit.clearSearch(),
+                )
+              : null,
+          filled: true,
+          fillColor: AppColors.secondaryColor.withAlpha(26),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r)),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: AppColors.primaryColor),
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+        ),
+        onChanged: (value) => cubit.onSearchChanged(value),
+      ),
+    );
+  } // دالة بناء بطاقة الإحصائيات
+
+  Widget _buildSummaryCard(int count, double cost) {
+    return Container(
+      padding: EdgeInsets.all(15.r),
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15.r),
+        border: Border.all(color: AppColors.primaryColor.withOpacity(0.3)),
+      ),
+      child: Column(
+        children: [
+          _buildStatItem(
+            label: 'إجمالي عدد الخدمات',
+            value: '$count',
+            icon: Icons.list_alt,
+          ),
+          12.verticalSpace,
+
+          _buildStatItem(
+            label: 'إجمالي سعر الخدمات',
+            value: '${cost.toStringAsFixed(2)} ر.س',
+            icon: Icons.payments_outlined,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem({
+    required String label,
+    required String value,
+    required IconData icon,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 18.r, color: AppColors.primaryColor),
+        5.horizontalSpace,
+        Text(label, style: Styles.style14W400.copyWith(color: Colors.grey)),
+        const Spacer(),
+        Text(
+          value,
+          style: Styles.style14W600.copyWith(color: AppColors.primaryColor),
+        ),
+      ],
     );
   }
 

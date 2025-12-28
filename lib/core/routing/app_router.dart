@@ -99,16 +99,16 @@ class AppRouter {
           alignment: Alignment.center,
           settings: settings,
         );
-      case Routes.homeClientScreen:
-        return PageTransition(
-          child: BlocProvider(
-            create: (context) => HomeClientCubit(getIt())..getServices(),
-            child: const ClientHomeScreen(),
-          ),
-          type: PageTransitionType.fade,
-          alignment: Alignment.center,
-          settings: settings,
-        );
+      // case Routes.homeClientScreen:
+      //   return PageTransition(
+      //     child: BlocProvider(
+      //       create: (context) => HomeClientCubit(getIt())..getServices(),
+      //       child: const ClientHomeScreen(),
+      //     ),
+      //     type: PageTransitionType.fade,
+      //     alignment: Alignment.center,
+      //     settings: settings,
+      //   );
       case Routes.clientCarsScreen:
         final String userId = settings.arguments as String;
         return PageTransition(
@@ -177,8 +177,8 @@ class AppRouter {
       case Routes.requestDetailsScreen:
         final request = settings.arguments as Data;
         return PageTransition(
-          child: BlocProvider.value(
-            value: getIt<HomeTechnicianCubit>(),
+          child: BlocProvider(
+            create: (context) => getIt<HomeTechnicianCubit>(),
             // ..getRequestDetails(requestId: '$requestId')
             child: RequestDetailsScreen(request: request),
           ),

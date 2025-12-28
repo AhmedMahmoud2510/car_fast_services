@@ -20,7 +20,7 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<ChatRepo>(() => ChatRepo(getIt()));
   getIt.registerFactory<HomeClientCubit>(() => HomeClientCubit(getIt()));
   getIt.registerLazySingleton<HomeClientRepo>(() => HomeClientRepo(getIt()));
-  getIt.registerLazySingleton<HomeTechnicianCubit>(
+  getIt.registerFactory<HomeTechnicianCubit>(
     () => HomeTechnicianCubit(getIt()),
   );
   getIt.registerLazySingleton<HomeTechnicianRepo>(

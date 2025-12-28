@@ -31,42 +31,31 @@ class HomeTechnicianCubit extends Cubit<HomeTechnicianState> {
   }
 
   Future<void> searchCarRequests(String query) async {
+    // 1. إذا كان البحث فارغاً، نعود للبيانات الأصلية
     if (query.trim().isEmpty) {
-      isSearching = false; // مهم جداً
-      setOffsetMaintenanceRequests(1);
+      isSearching = false;
+      maintenanceRequestsOffset = 1; // تصفير الأوفست
       maintenanceRequestsOffsetList.clear();
-      await getCarRequestsMaintenance(); // سيستخدم _lastCarId المحفوظ
+      // لا نجعل الموديل نل هنا بل نتركه حتى يأتي الرد من الدالة الأساسية لضمان عدم ظهور شاشة فارغة مفاجئة
+      await getCarRequestsMaintenance();
       return;
     }
 
+    // 2. إذا كان هناك نص للبحث
     isSearching = true;
-    showLoading();
-    carMaintenanceRequestsModel = null;
-    maintenanceRequestsPaginate = true;
-    if (!isClosed) emit(GetRequestsLoadingState());
+    emit(GetRequestsLoadingState()); // إرسال حالة التحميل للواجهة
 
     final result = await _homeTechnicianRepo.searchRequests(query: query);
 
-    hideLoading();
-    if (isClosed) return;
+    result.fold((l) => emit(GetRequestsFailedState()), (model) {
+      carMaintenanceRequestsModel = model;
+      // تحديث بيانات الترقيم (Pagination) بناءً على نتائج البحث
+      maintenanceRequestsPageSize = model.meta?.total ?? 0;
+      maintenanceRequestsPaginate =
+          (model.meta?.currentPage == model.meta?.lastPage);
 
-    result.fold(
-      (l) {
-        emit(GetRequestsFailedState());
-      },
-      (model) {
-        carMaintenanceRequestsModel = model;
-
-        maintenanceRequestsPageSize = model.meta!.total;
-        if (model.meta!.currentPage == model.meta!.lastPage) {
-          maintenanceRequestsPaginate = true;
-        } else {
-          maintenanceRequestsPaginate = false;
-        }
-
-        emit(GetRequestsSuccessState());
-      },
-    );
+      emit(GetRequestsSuccessState());
+    });
   }
 
   Future<void> getCarRequestsMaintenance({String? carId}) async {

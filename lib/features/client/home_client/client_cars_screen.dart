@@ -9,7 +9,18 @@ class ClientCarsScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         final cubit = context.read<HomeClientCubit>();
+        // final carsList = cubit.clientCarsModel?.cars ?? [];
 
+        // // 2. حساب الإجماليات (بفرض أن موديل السيارة يحتوي على حقل للتكاليف مثل total_maintenance_cost)
+        // // ملاحظة: إذا كان اسم الحقل مختلف في الموديل الخاص بك، يرجى تغييره هنا.
+        // int totalItems = carsList.length;
+        // double totalCosts = carsList.fold(0, (sum, item) {
+        //   // افترضت هنا وجود حقل اسمه totalAmount أو ما شابه داخل موديل السيارة
+        //   // إذا كانت التكاليف تأتي من مكان آخر، تأكد من استدعاء الحقل الصحيح
+        //   return sum +
+        //       (double.tryParse(item.id.toString()) ??
+        //           0); // مثال: استبدل id بالحقل الصحيح للتكلفة
+        // });
         return Scaffold(
           drawer: const ClientDrawerWidget(),
           appBar: AppBar(
@@ -74,7 +85,36 @@ class ClientCarsScreen extends StatelessWidget {
                     },
                   ),
                 ),
-
+                // if (carsList.isNotEmpty)
+                //   Padding(
+                //     padding: EdgeInsets.only(bottom: 16.h),
+                //     child: Container(
+                //       padding: EdgeInsets.all(12.r),
+                //       decoration: BoxDecoration(
+                //         color: AppColors.primaryColor.withOpacity(0.05),
+                //         borderRadius: BorderRadius.circular(12.r),
+                //         border: Border.all(
+                //           color: AppColors.primaryColor.withOpacity(0.2),
+                //         ),
+                //       ),
+                //       child: Column(
+                //         children: [
+                //           _buildStatItem(
+                //             label: 'إجمالي عدد الطلبات',
+                //             value: totalItems.toString(),
+                //             icon: Icons.directions_car,
+                //           ),
+                //           12.verticalSpace,
+                //           _buildStatItem(
+                //             label: 'إجمالي تكاليف الطلبات',
+                //             value: '${totalCosts.toStringAsFixed(2)} ر.س',
+                //             icon: Icons.monetization_on,
+                //           ),
+                //           16.verticalSpace,
+                //         ],
+                //       ),
+                //     ),
+                //   ),
                 Expanded(
                   child:
                       (state is GetClientCarsLoadingState &&
@@ -207,5 +247,25 @@ class ClientCarsScreen extends StatelessWidget {
         );
       },
     );
-  }
+  } // 4. دالة مساعدة لبناء عناصر الإحصاء
+
+  // Widget _buildStatItem({
+  //   required String label,
+  //   required String value,
+  //   required IconData icon,
+  // }) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.center,
+  //     children: [
+  //       Icon(icon, size: 16.r, color: AppColors.primaryColor),
+  //       5.horizontalSpace,
+  //       Text(label, style: Styles.style14W400.copyWith(color: Colors.grey)),
+  //       const Spacer(),
+  //       Text(
+  //         value,
+  //         style: Styles.style16W600.copyWith(color: AppColors.primaryColor),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
