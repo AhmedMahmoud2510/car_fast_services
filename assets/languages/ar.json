@@ -65,5 +65,8 @@
   "cars_search": "ابحث برقم اللوحة أو المصنع...",
   "services_search": "ابحث عن خدمة...",
   "requests_search": "ابحث باسم الخدمة أو تفاصيل الفاتورة...",
-  "requests_search1": "ابحث باسم العميل، اسم الفني، رقم اللوحة..."
+  "requests_search1": "ابحث باسم العميل، اسم الفني، رقم اللوحة...",
+  "Service Record": "سجل الخدمات",
+  "service_record": "سجل الخدمات",
+  "search_for_service_name": "ابحث عن اسم الخدمة"
 }

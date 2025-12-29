@@ -45,4 +45,5 @@ class EndPoints {
   static const String getRequestDetails = 'maintenance/request/';
   static const String updateRequest = 'maintenance/';
   static const String search = 'maintenance-request/search';
+  static const String serviceRecord = 'maintenance-request/client/';
 }

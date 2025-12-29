@@ -329,4 +329,15 @@ class ApiServices {
       imageFile: image,
     );
   }
+  Future<Response?> getServiceRecord({
+    required String clientId,
+    int? page,
+  }) async {
+    return _dioFactory.get(
+      endPoint: page != null
+          ? '${EndPoints.getMaintenanceRequestsClient}$clientId?page=$page'
+          : '${EndPoints.getMaintenanceRequestsClient}$clientId',
+    );
+  }
+
 }

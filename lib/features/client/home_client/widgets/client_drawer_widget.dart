@@ -17,6 +17,21 @@ class ClientDrawerWidget extends StatelessWidget {
               context.pushNamed(Routes.profileScreen);
             },
           ),
+          DrawerItemWidget(
+            iconAsset: CupertinoIcons.car,
+            title: 'Service Record'.tr(),
+            onTap: () {
+              final String clientId = CacheHelper.getData(
+                key: CacheKeys.userId,
+              ).toString();
+
+              context.pushNamed(
+                Routes.serviceRecordScreen,
+                arguments: clientId,
+              );
+            },
+          ),
+
           // DrawerItemWidget(iconAsset: CupertinoIcons.car_detailed,title:'cars'.tr() ,onTap: () async {
           //   context.pushNamed(Routes.clientCarsScreen,arguments: '${await CacheHelper.getData(key: CacheKeys.userId)}');
           //

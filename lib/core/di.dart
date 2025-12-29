@@ -1,4 +1,6 @@
 import 'package:quick_cars_service/barrel.dart';
+import 'package:quick_cars_service/features/service_record/controller/service_record_cubit.dart';
+import 'package:quick_cars_service/features/service_record/data/repo/service_record_repo.dart';
 
 final getIt = GetIt.instance;
 
@@ -26,4 +28,6 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<HomeTechnicianRepo>(
     () => HomeTechnicianRepo(getIt()),
   );
+   getIt.registerFactory<ServiceRecordCubit>(() => ServiceRecordCubit(getIt()));
+  getIt.registerLazySingleton<ServiceRecordRepo>(() => ServiceRecordRepo(getIt()));
 }

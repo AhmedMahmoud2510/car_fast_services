@@ -1,4 +1,6 @@
 import 'package:quick_cars_service/barrel.dart';
+import 'package:quick_cars_service/features/service_record/controller/service_record_cubit.dart';
+import 'package:quick_cars_service/features/service_record/view/service_record_screen.dart';
 import 'package:quick_cars_service/features/technician/data/model/car_requests_maintenance_model.dart';
 
 class AppRouter {
@@ -174,6 +176,20 @@ class AppRouter {
           alignment: Alignment.center,
           settings: settings,
         );
+        case Routes.serviceRecordScreen:
+        final String clientId = settings.arguments as String;
+        return PageTransition(
+          child: BlocProvider(
+            create: (context) =>
+                ServiceRecordCubit(getIt())
+                  ..getClientMaintenanceRequests(clientId: clientId),
+            child: ServiceRecordScreen(clientId: clientId),
+          ),
+          type: PageTransitionType.fade,
+          alignment: Alignment.center,
+          settings: settings,
+        );
+
       case Routes.requestDetailsScreen:
         final request = settings.arguments as Data;
         return PageTransition(
