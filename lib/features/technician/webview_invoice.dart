@@ -38,7 +38,7 @@ class _InvoiceWebViewScreenState extends State<InvoiceWebViewScreen> {
   // ضبط حجم الصفحة لتناسب عرض الجهاز
   var meta = document.createElement('meta');
   meta.name = "viewport";
-  meta.content = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+  meta.content = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
   document.head.appendChild(meta);
 
   // ضبط عرض المحتوى ليلائم الشاشة بالكامل
